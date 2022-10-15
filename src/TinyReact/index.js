@@ -1,2 +1,4 @@
 import createElement from "./createElement";
-export default { createElement };
+import render from "./render";
+
+export default { createElement, render };
