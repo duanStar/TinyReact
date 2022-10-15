@@ -22,6 +22,31 @@ const virtualDOM = (
   </div>
 );
 
-TinyReact.render(virtualDOM, app);
+function Demo() {
+  return <div>Demo</div>;
+}
+function Heart({ title }) {
+  return (
+    <div>
+      &hearts;
+      <Demo />
+      <h1>{title}</h1>
+      <Alert name="zs" age={20} />
+    </div>
+  );
+}
 
-console.log(virtualDOM);
+class Alert extends TinyReact.Component {
+  render() {
+    const { name, age } = this.props;
+    return (
+      <div>
+        hello class component, {name}, {age}
+      </div>
+    );
+  }
+}
+
+TinyReact.render(<Heart title="hello react" />, app);
+
+// console.log(virtualDOM);
