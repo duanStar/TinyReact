@@ -52,8 +52,8 @@ const modifyDOM = (
   </div>
 );
 
-function Demo() {
-  return <div>Demo</div>;
+function Demo({ name = "zs" }) {
+  return <div>Demo {name}</div>;
 }
 function Heart({ title }) {
   return (
@@ -67,20 +67,50 @@ function Heart({ title }) {
 }
 
 class Alert extends TinyReact.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: "Alert",
+    };
+  }
+  onClick() {
+    this.setState({
+      title: new Date().getTime(),
+    });
+  }
   render() {
     const { name, age } = this.props;
     return (
       <div>
         hello class component, {name}, {age}
+        <div>{this.state.title}</div>
+        <button onClick={() => this.onClick()}>更新title</button>
       </div>
     );
   }
+  componentWillReceiveProps(nextProps) {
+    console.log("componentWillReceiveProps", nextProps);
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("shouldComponentUpdate");
+    return nextProps !== this.props || nextState !== this.state;
+  }
+  componentWillUpdate(nextProps, nextState) {
+    console.log("componentWillUpdate", nextProps);
+  }
+  componentDidUpdate(prevProps, prevState) {
+    console.log("componentDidUpdate", prevProps);
+  }
 }
 
-TinyReact.render(virtualDOM, app);
+TinyReact.render(<Alert name="zs" age={20} />, app);
+
+// setTimeout(() => {
+//   TinyReact.render(modifyDOM, app);
+// }, 2000);
 
 setTimeout(() => {
-  TinyReact.render(modifyDOM, app);
+  TinyReact.render(<Alert name="ls" age={100} />, app);
 }, 2000);
 
 // console.log(virtualDOM);
