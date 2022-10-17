@@ -1,4 +1,5 @@
 import updateNodeElement from "./updateNodeElement";
+import mountElement from "./mountElement";
 
 export default function createDOMElement(vnode) {
   let element = null;
@@ -10,5 +11,9 @@ export default function createDOMElement(vnode) {
     element = document.createElement(vnode.type);
     updateNodeElement(element, vnode);
   }
+  vnode.children.forEach((child) => {
+    mountElement(child, element);
+  });
+  element._vnode = vnode;
   return element;
 }
