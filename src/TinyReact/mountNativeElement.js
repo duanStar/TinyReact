@@ -1,4 +1,5 @@
 import createDOMElement from "./createDOMElement";
+import isFunction from "./isFunction";
 
 export default function mountNativeElement(vnode, container, oldEle) {
   if (!vnode || !container) {
@@ -8,8 +9,14 @@ export default function mountNativeElement(vnode, container, oldEle) {
   if (vnode.component && vnode.component.setDOM) {
     vnode.component.setDOM(element);
   }
-  if (oldEle) {
-    container.removeChild(oldEle);
+  if (vnode.props.ref) {
+    isFunction(vnode.props.ref)
+      ? vnode.props.ref(element)
+      : (vnode.props.ref.current = element);
   }
-  container.appendChild(element);
+  if (oldEle) {
+    container.insertBefore(element, oldEle);
+  } else {
+    container.appendChild(element);
+  }
 }

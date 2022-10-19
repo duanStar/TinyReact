@@ -71,6 +71,11 @@ class Alert extends TinyReact.Component {
     super(props);
     this.state = {
       title: "Alert",
+      persons: [
+        { id: 1, name: "zs" },
+        { id: 2, name: "ls" },
+        { id: 3, name: "ww" },
+      ],
     };
   }
   onClick() {
@@ -85,8 +90,31 @@ class Alert extends TinyReact.Component {
         hello class component, {name}, {age}
         <div>{this.state.title}</div>
         <button onClick={() => this.onClick()}>更新title</button>
+        <input type="text" ref={(input) => (this.input = input)} />
+        <button onClick={() => console.log(this.input?.value)}>
+          获取input值
+        </button>
+        <ul>
+          {this.state.persons.map((item) => (
+            <li key={item.id}>{item.name + new Date()}</li>
+          ))}
+        </ul>
+        <button
+          onClick={() => {
+            const persons = [...this.state.persons];
+            persons.push(...persons.splice(0, 1));
+            this.setState({
+              persons,
+            });
+          }}
+        >
+          change
+        </button>
       </div>
     );
+  }
+  componentDidMount() {
+    console.log("componentDidMount");
   }
   componentWillReceiveProps(nextProps) {
     console.log("componentWillReceiveProps", nextProps);
@@ -109,8 +137,8 @@ TinyReact.render(<Alert name="zs" age={20} />, app);
 //   TinyReact.render(modifyDOM, app);
 // }, 2000);
 
-setTimeout(() => {
-  TinyReact.render(<Alert name="ls" age={100} />, app);
-}, 2000);
+// setTimeout(() => {
+//   TinyReact.render(<Alert name="ls" age={100} />, app);
+// }, 2000);
 
 // console.log(virtualDOM);

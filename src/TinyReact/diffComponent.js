@@ -3,7 +3,8 @@ import updateComponent from "./updateComponent";
 
 export default function diffComponent(vnode, component, oldEle, container) {
   if (!isSameComponent(vnode, component)) {
-    mountElement(vnode, container, oldEle);
+    container.removeChild(oldEle);
+    mountElement(vnode, container);
   } else {
     updateComponent(vnode, component, oldEle, container);
   }

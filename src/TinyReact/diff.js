@@ -21,11 +21,42 @@ export default function diff(vnode, container, oldEle) {
     } else {
       updateNodeElement(oldEle, vnode, oldVnode);
     }
-    vnode.children?.forEach((child, index) => {
-      diff(child, oldEle, oldEle.childNodes[index]);
-    });
     const oldChildNodes = oldEle.childNodes;
     const newChildren = vnode.children;
+    const keyedElements = {};
+    for (let i = 0, len = oldChildNodes.length; i < len; i++) {
+      const ele = oldChildNodes[i];
+      if (ele.nodeType === 1) {
+        const key = ele.getAttribute("key");
+        if (key) {
+          keyedElements[key] = ele;
+        }
+      }
+    }
+
+    const hasNoKey = Object.keys(keyedElements).length === 0;
+    if (hasNoKey) {
+      vnode.children?.forEach((child, index) => {
+        diff(child, oldEle, oldChildNodes[index]);
+      });
+    } else {
+      newChildren?.forEach((child, index) => {
+        const key = child.props.key;
+        if (key) {
+          const ele = keyedElements[key];
+          if (ele) {
+            if (oldChildNodes[index] && oldChildNodes[index] !== ele) {
+              diff(child, oldEle, ele);
+              oldEle.insertBefore(ele, oldChildNodes[index]);
+            } else {
+              diff(child, oldEle, ele);
+            }
+          } else {
+            mountElement(child, oldEle, oldChildNodes[index]);
+          }
+        }
+      });
+    }
     for (let i = oldChildNodes.length - 1; i > newChildren.length - 1; i--) {
       oldEle.removeChild(oldChildNodes[i]);
     }
