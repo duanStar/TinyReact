@@ -4,7 +4,7 @@ import mountElement from "./mountElement";
 import diffComponent from "./diffComponent";
 import updateNodeElement from "./updateNodeElement";
 import updateTextNode from "./updateTextNode";
-import isFunctionComponent from "./isFunctionComponent";
+import unMountNode from "./unMountNode";
 
 export default function diff(vnode, container, oldEle) {
   const oldVnode = oldEle && oldEle._vnode;
@@ -57,8 +57,33 @@ export default function diff(vnode, container, oldEle) {
         }
       });
     }
-    for (let i = oldChildNodes.length - 1; i > newChildren.length - 1; i--) {
-      oldEle.removeChild(oldChildNodes[i]);
+    if (oldChildNodes.length > newChildren.length) {
+      if (hasNoKey) {
+        for (
+          let i = oldChildNodes.length - 1;
+          i > newChildren.length - 1;
+          i--
+        ) {
+          oldEle.removeChild(oldChildNodes[i]);
+        }
+      } else {
+        for (let i = 0; i < oldChildNodes.length; i++) {
+          const oldChild = oldChildNodes[i];
+          let oldChildKey = oldChild._vnode.props.key;
+          let found = false;
+          if (oldChildKey) {
+            for (let i = 0; i < newChildren.length; i++) {
+              if (oldChildKey === newChildren[i].props.key) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              unMountNode(oldChild);
+            }
+          }
+        }
+      }
     }
   }
 }
