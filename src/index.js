@@ -1,4 +1,5 @@
 import TinyReact from "./TinyReact";
+import { render } from "./TinyReact/fiber";
 
 const app = document.querySelector("#app");
 
@@ -131,7 +132,8 @@ class Alert extends TinyReact.Component {
   }
 }
 
-TinyReact.render(<Alert name="zs" age={20} />, app);
+// TinyReact.render(<Alert name="zs" age={20} />, app);
+render(virtualDOM, app);
 
 // setTimeout(() => {
 //   TinyReact.render(modifyDOM, app);
