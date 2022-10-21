@@ -2,6 +2,16 @@ import { createTaskQueue, createStateNode, getTag } from "../misc";
 
 const taskQueue = createTaskQueue();
 let subTask = null;
+let pendingCommit = null;
+
+const commitAllWork = (fiber) => {
+  console.log(fiber.effects);
+  fiber.effects.forEach((item) => {
+    if (item.effectTag === "placement") {
+      item.parent.stateNode.appendChild(item.stateNode);
+    }
+  });
+};
 
 const getFirstTask = () => {
   const task = taskQueue.pop();
@@ -63,7 +73,7 @@ const executeTask = (fiber) => {
     currentExecuteFiber = currentExecuteFiber.parent;
   }
   // fiber 树构建完毕
-  console.log(currentExecuteFiber);
+  pendingCommit = currentExecuteFiber;
 };
 
 const workLoop = (deadline) => {
@@ -74,6 +84,9 @@ const workLoop = (deadline) => {
   // 有子任务并且有空余时间
   while (subTask && deadline.timeRemaining() > 1) {
     subTask = executeTask(subTask);
+  }
+  if (pendingCommit) {
+    commitAllWork(pendingCommit);
   }
 };
 
