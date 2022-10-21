@@ -1,5 +1,6 @@
 import TinyReact from "./TinyReact";
 import { render } from "./TinyReact/fiber";
+import Component from "./TinyReact/fiber/Component";
 
 const app = document.querySelector("#app");
 
@@ -33,11 +34,13 @@ const modifyDOM = (
   <div className="container">
     <h1 id="tt">你好 Tiny React</h1>
     <h2 data-test="test123">(编码必杀技)</h2>
-    <ul>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-    </ul>
+    <div>
+      <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+      </ul>
+    </div>
     <div>
       嵌套1 <div>嵌套 1.1</div>
     </div>
@@ -46,15 +49,16 @@ const modifyDOM = (
     {2 == 2 && <div>2</div>}
     <span>这是一段被修改过的内容</span>
     <button onClick={() => alert("你好！！！！！！！！")}>点击我</button>
-    <h3>这个将会被删除</h3>
     2, 3<label>label</label>
     <input type="text" />
     <input type="checkbox" checked={true} />
   </div>
 );
 
-function Demo({ name = "zs" }) {
-  return <div>Demo {name}</div>;
+class Demo extends Component {
+  render() {
+    return <div>Demo</div>;
+  }
 }
 function Heart({ title }) {
   return (
@@ -67,7 +71,7 @@ function Heart({ title }) {
   );
 }
 
-class Alert extends TinyReact.Component {
+class Alert extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -135,9 +139,9 @@ class Alert extends TinyReact.Component {
 // TinyReact.render(<Alert name="zs" age={20} />, app);
 render(virtualDOM, app);
 
-// setTimeout(() => {
-//   TinyReact.render(modifyDOM, app);
-// }, 2000);
+setTimeout(() => {
+  render(modifyDOM, app);
+}, 2000);
 
 // setTimeout(() => {
 //   TinyReact.render(<Alert name="ls" age={100} />, app);
